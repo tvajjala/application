@@ -1,0 +1,29 @@
+#Actuator health endpoints
+management:
+      address: 127.0.0.1
+      port: 8084
+      security:
+          enabled: false
+#server configuration
+server:
+  port: 8084
+  
+endpoints:
+  beans:
+    enabled: false
+
+#JPA configuration
+spring:
+  datasource:
+    url: jdbc:h2:mem:shopping;db_close_on_exit=false
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: 
+  data:
+    jpa:
+      repositories:
+        enabled: true
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+    

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Highcharts Essentials</title>
+</head>
+<body>
+
+	<script src="/valour/jquery-1.9.1.min.js"></script>
+	<script src="/valour/highcharts.js"></script>
+
+
+
+	<div>
+		<h2>Please select year to see the results</h2>
+	</div>
+	<div>
+		<select id="userinput" onchange="start()">
+			<option value="4">Please select year</option>
+			<option value="0">2010</option>
+			<option value="1">2008</option>
+			<option value="2">2006</option>
+			<option value="3">2004</option>
+			<option value="4">2002</option>
+		</select>
+	</div>
+
+
+	<div id="container" style="width: 600px; height: 450px;"></div>
+
+
+	<script type="text/javascript">
+		var webSocket = new WebSocket(
+				'ws://localhost:8084/piechart');
+
+		webSocket.onerror = function(event) {
+			onError(event)
+		};
+
+		webSocket.onopen = function(event) {
+			onOpen(event)
+		};
+
+		webSocket.onmessage = function(event) {
+			onMessage(event)
+		};
+
+		function onMessage(event) {
+			$('#container').highcharts({
+				credits : {
+					enabled : false
+				},
+				chart : {
+					type : 'column'
+				},
+				title : {
+					text : 'Dashboard'
+				},
+				subtitle : {
+					text : 'rendering data through websockets'
+				},
+				xAxis : {
+					title : {
+						text : 'Mail Groups'
+					},
+					categories : [ 'FML', 'TML', 'SML', 'Others' ]
+				},
+				yAxis : {
+					title : {
+						text : 'Date'
+					}
+				},
+				series : [ {
+					name : 'Mail Group',
+					data : JSON.parse(event.data)
+				} ]
+			})
+		}
+
+		function onOpen(event) {
+			start();
+			//document.getElementById('messages').innerHTML = 'Now Connection established';
+		}
+
+		function onError(event) {
+			alert(event.data);
+		}
+
+		function start() {
+			var text = document.getElementById("userinput").value;
+			webSocket.send(text);
+			return false;
+		}
+	</script>
+
+
+</body>
+
+
+
+
+
+</html>
